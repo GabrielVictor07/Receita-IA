@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gerador de Receitas</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=delete" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header><h1>Gerador de Receitas</h1></header>
+  <main>
+    <section class="ingredientes">
+      <h2>Seus Ingredientes</h2>
+      <div class="input-group">
+        <input id="ingredienteInput" placeholder="Adicionar ingrediente..." />
+        <button id="addBtn">Adicionar</button>
+      </div>
+      <ul id="listaIngredientes"></ul>
+      <button id="gerarBtn" class="primary">Gerar receita</button>
+    </section>
+
+    <section class="receitas">
+      <h2>Receita Gerada</h2>
+      <div id="saidaReceita" class="card">Nenhuma receita gerada ainda.</div>
+    </section>
+  </main>
+  <footer> &copy Gabriel Motta | Todos os direitos reservados</footer>
+  <script src="script.js"></script>
+</body>
+</html>

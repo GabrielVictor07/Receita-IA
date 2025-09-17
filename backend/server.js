@@ -74,6 +74,10 @@ app.post("/gerar-receita", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.send("Servidor rodando! Use POST /gerar-receita para gerar receitas.");
+});
+
 app.listen(PORT, () =>
   console.log(`🚀 Servidor rodando em http://localhost:${PORT}`)
 );

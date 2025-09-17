@@ -1,13 +1,23 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import fetch from "node-fetch"
+import fetch from "node-fetch";
+import path from "path";
+import { fileURLToPath } from "url";
+
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Servir arquivos estáticos do frontend
+app.use(express.static(path.join(__dirname, "../frontend")));
+
+// Variáveis de ambiente e porta
 const PORT = process.env.PORT || 3000;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_MODEL_ID = "gemini-2.5-flash-lite"; // modelo mais leve
@@ -31,7 +41,7 @@ async function chamarGemini(prompt, tentativas = 2) {
     if (data.error) {
       if (data.error.code === 503 && tentativas > 0) {
         console.log("Modelo sobrecarregado, tentando novamente em 2s...");
-        await new Promise(r => setTimeout(r, 2000)); // espera 2 segundos
+        await new Promise(r => setTimeout(r, 2000));
         return chamarGemini(prompt, tentativas - 1);
       }
       throw new Error(data.error.message);
@@ -51,6 +61,7 @@ async function chamarGemini(prompt, tentativas = 2) {
 // Rota para gerar receita
 app.post("/gerar-receita", async (req, res) => {
   try {
+    console.log("req.body:", req.body);
     const { ingredientes } = req.body;
 
     if (!ingredientes || ingredientes.length === 0) {
@@ -62,22 +73,23 @@ app.post("/gerar-receita", async (req, res) => {
     const receita = await chamarGemini(prompt);
 
     let receitaLimpa = receita
-      .replace(/#/g, "")       // remove # e ##
-      .replace(/\*\*/g, "")    // remove **bold**
-      .replace(/\*/g, "•")     // opcional: trocar * de lista por •
-      .replace(/\n/g, "<br>"); // mantém quebras de linha para HTML
+      .replace(/#/g, "")
+      .replace(/\*\*/g, "")
+      .replace(/\*/g, "•")
+      .replace(/\n/g, "<br>");
 
     res.json({ receita: receitaLimpa });
-
   } catch (err) {
     res.status(500).json({ error: err.message || "Erro ao gerar receita." });
   }
 });
 
+// Rota padrão para frontend
 app.get("/", (req, res) => {
-  res.send("Servidor rodando! Use POST /gerar-receita para gerar receitas.");
+  res.sendFile(path.join(__dirname, "../frontend/index.html"));
 });
 
-app.listen(PORT, () =>
-  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`)
-);
+// Start do servidor
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+});

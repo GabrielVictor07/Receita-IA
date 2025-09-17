@@ -50,7 +50,8 @@ async function gerarReceitaIA() {
   div.innerHTML = "⏳ Gerando receita com IA...";
 
   try {
-    const response = await fetch("https://receita-ia.onrender.com/gerar-receita", {
+    // 🔹 URL relativa para funcionar local e online
+    const response = await fetch("/gerar-receita", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ingredientes: listaIngredientes }),
@@ -63,7 +64,6 @@ async function gerarReceitaIA() {
       return;
     }
 
-    // Exibe a receita já formatada com <br> e bullets
     div.innerHTML = data.receita || "❌ Nenhuma receita gerada.";
   } catch (error) {
     div.innerHTML = "❌ Erro ao se conectar com o servidor.";

@@ -28,9 +28,7 @@ function atualizarListaIngredientes() {
   const ul = document.getElementById("listaIngredientes");
   ul.innerHTML = "";
   listaIngredientes.forEach((item, index) => {
-    ul.innerHTML += `<li>${item} <button onclick="removerIngrediente(${index})" class="remove-botton"><span class="material-symbols-outlined">
-delete
-</span></button></li>`;
+    ul.innerHTML += `<li>${item} <button onclick="removerIngrediente(${index})" class="remove-botton"><span class="material-symbols-outlined">delete</span></button></li>`;
   });
 }
 
@@ -45,7 +43,7 @@ async function gerarReceitaIA() {
   div.innerHTML = "⏳ Gerando receita com IA...";
 
   try {
-    const response = await fetch("http://localhost:3000/gerar-receita", {
+    const response = await fetch("https://receita-ia.onrender.com/receita", { // URL do Render
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ingredientes: listaIngredientes }),
@@ -58,7 +56,8 @@ async function gerarReceitaIA() {
       return;
     }
 
-    div.innerHTML = data.receita.replace(/\n/g, "<br>");
+    // Atualiza a div com a receita, mantendo quebras de linha
+    div.innerHTML = data.receita ? data.receita.replace(/\n/g, "<br>") : "❌ Nenhuma receita gerada.";
   } catch (error) {
     div.innerHTML = "❌ Erro ao se conectar com o servidor.";
     console.error(error);
